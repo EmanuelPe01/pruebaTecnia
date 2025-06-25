@@ -2,18 +2,16 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ColorTelaController;
+use App\Http\Controllers\TipoTelaController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::controller(ColorTelaController::class)->group( function () {
+    Route::post('/createColor', 'store');
+    Route::get('/showAllColors', 'showAll');
+});
+
+Route::controller(TipoTelaController::class)->group( function () {
+    Route::post('/createTela', 'store');
+    Route::get('/showAllTelas', 'showAll');
 });
