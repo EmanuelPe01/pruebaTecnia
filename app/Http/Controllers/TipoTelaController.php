@@ -17,14 +17,14 @@ class TipoTelaController extends Controller
                 'nb_tipo_tela' => 'required|unique:tipo_telas,nb_tipo_tela'
             ]);
     
-            $um = tipoTela::create([
+            $tipoTela = tipoTela::create([
                 'nb_tipo_tela' => $request->nb_tipo_tela,
             ]);
     
             return response()->json([
                 'code' => 200,
                 'message' => 'Tipo de tela creado con éxito',
-                'detalle' => $um
+                'detalle' => $tipoTela
             ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -45,34 +45,43 @@ class TipoTelaController extends Controller
     public function showAll()
     {
         try{
-            $coloresTelas = tipoTela::All();
+            $tiposTelas = tipoTela::All();
 
             return response()->json([
                 'code' => 200,
                 'message' => 'exito',
-                'detalle' => ['telas' => $coloresTelas]
+                'detalle' => ['telas' => $tiposTelas]
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'code' => 200,
+                'code' => 500,
                 'message' => 'error',
                 'detalle' => $e
             ], 200);
         }
     }
 
-    public function edit(tipoTela $tipoTela)
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $tipoTela = tipoTela::find($id);
 
-    public function update(Request $request, tipoTela $tipoTela)
-    {
-        //
-    }
+            if($tipoTela) {
+                $tipoTela->delete();
 
-    public function destroy(tipoTela $tipoTela)
-    {
-        //
+                return response()->json([
+                    'code' => 200,
+                    'message' => 'Registro eliminado'
+                ], 200);
+            } else {
+                return response()->json(404);
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json([
+                'code' => 500,
+                'message' => 'Error en la base de datos',
+                'error' => $e->getMessage()
+            ], 200);
+        }
     }
 }

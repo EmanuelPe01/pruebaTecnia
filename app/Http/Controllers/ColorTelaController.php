@@ -16,14 +16,14 @@ class ColorTelaController extends Controller
                 'nb_color_tela' => 'required|unique:color_telas,nb_color_tela'
             ]);
     
-            $um = colorTela::create([
+            $colorTela = colorTela::create([
                 'nb_color_tela' => $request->nb_color_tela,
             ]);
     
             return response()->json([
                 'code' => 200,
                 'message' => 'Color creado con éxito',
-                'detalle' => $um
+                'detalle' => $colorTela
             ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
@@ -59,19 +59,28 @@ class ColorTelaController extends Controller
             ], 200);
         }
     }
-
-    public function edit(colorTela $colorTela)
+    
+    public function destroy($id)
     {
-        //
-    }
+        try {
+            $colorTela = colorTela::find($id);
 
-    public function update(Request $request, colorTela $colorTela)
-    {
-        //
-    }
+            if($colorTela) {
+                $colorTela->delete();
 
-    public function destroy(colorTela $colorTela)
-    {
-        //
+                return response()->json([
+                    'code' => 200,
+                    'message' => 'Registro eliminado'
+                ], 200);
+            } else {
+                return response()->json(404);
+            }
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json([
+                'code' => 500,
+                'message' => 'Error en la base de datos',
+                'error' => $e->getMessage()
+            ], 200);
+        }
     }
 }
