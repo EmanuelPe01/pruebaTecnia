@@ -14,8 +14,8 @@ Route::controller(ColorTelaController::class)->group( function () {
 });
 
 Route::controller(TipoTelaController::class)->group( function () {
-    Route::post('/createTela', 'store');
-    Route::get('/showAllTelas', 'showAll');
+    Route::post('/createTipoTela', 'store');
+    Route::get('/showAllTiposTelas', 'showAll');
     Route::delete('/dropTipoTela/{cd_TipoTela}', 'destroy');
 });
 

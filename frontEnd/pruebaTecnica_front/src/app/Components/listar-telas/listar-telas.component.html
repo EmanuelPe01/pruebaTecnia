@@ -1,0 +1,111 @@
+<div class="container">
+    <div class="row mt-3">
+        <div *ngIf="isLoading; else showTable">
+            <div class="mt-5">
+                <div class="loader"></div>
+            </div>
+        </div>
+        <ng-template #showTable>
+            <div>
+                <div class="card mt-2">
+                    <div class="card-header">
+                        Búsqueda de telas
+                    </div>
+                    <div class="card-body">
+                        <div class="row justify-content-center">
+                            <div class="col col-11 col-md-6 mt-1 ps-3">
+                                <div class="textInputWrapper">
+                                    <input placeholder="Tela" type="text" class="textInput" [(ngModel)]="criterio_tela">
+                                </div>
+                            </div>
+                            <div class="col col-11 col-md-6 mt-1 ps-3">
+                                <div class="textInputWrapper">
+                                    <input placeholder="Color" type="text" class="textInput" [(ngModel)]="criterio_color">
+                                </div>
+                            </div>
+                            <div class="col col-12 col-md-3 mt-1 text-center">
+                                <a class="btn btn-outline-dark" style="
+                                                    --bs-btn-font-size: 1rem;
+                                                    --bs-btn-padding-y: .4rem; 
+                                                    --bs-btn-padding-x: .6rem;
+                                                    text-decoration: none;
+                                                ">
+                                    <i class="fa-solid fa-cash-register"></i>
+                                    Realizar venta
+                                </a>
+                            </div>
+                            <div class="col col-12 col-md-3 mt-1 text-center">
+                                <nuevaTela
+                                    [coloresTela]="coloresTela"
+                                    [tiposTela]="tiposTela"
+                                    (actualizarInventario)="getTelas()"
+                                ></nuevaTela>
+                            </div>
+                            <div class="col col-12 col-md-3 mt-1 text-center">
+                                <gestionColoresTela
+                                    [coloresTela] = "coloresTela"
+                                    (actualizarColores)="getColores()"
+                                    (actualizarInventario)="getTelas()"
+                                ></gestionColoresTela>
+                            </div>
+                            <div class="col col-12 col-md-3 mt-1 text-center">
+                                <gestionTiposTela
+                                    [tiposTela]= "tiposTela"
+                                    (actualizarTipos)="getTipos()"
+                                    (actualizarInventario)="getTelas()"
+                                ></gestionTiposTela>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive-xl">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Tipo</th>
+                            <th scope="col">Color</th>
+                            <th scope="col">Cantidad disponible (m)</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="table-group-divider">
+                        <tr
+                            *ngFor="let tela of filterTelas(telas, criterio_tela, criterio_color)">
+                            <td>{{tela.tipo_tela.nb_tipo_tela}}</td>
+                            <td>{{tela.color.nb_color_tela}}</td>
+                            <td>{{tela.cantidad}}</td>
+                            <td>
+                                <div class="row">
+                                    <div class="col col-4">
+                                        <a class="btn btn-outline-dark" style="
+                                                --bs-btn-font-size: 1rem;
+                                                --bs-btn-padding-y: .4rem; 
+                                                --bs-btn-padding-x: .6rem;
+                                                --bs-btn-hover-bg: rgb(229, 212, 22);
+                                                --bs-btn-hover-border-color: rgb(229, 212, 22);
+                                            ">
+                                            <i class="fa-solid fa-pen-to-square"></i>
+                                        </a>
+                                    </div>
+                                    <div class="col col-4">
+                                        <a class="btn btn-outline-dark" style="
+                                                --bs-btn-font-size: 1rem;
+                                                --bs-btn-padding-y: .4rem; 
+                                                --bs-btn-padding-x: .6rem;
+                                                --bs-btn-hover-bg: rgb(235, 33, 33);
+                                                --bs-btn-hover-border-color: rgb(235, 33, 33);
+                                            "
+                                            >
+                                            <i class="fa-solid fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </ng-template>
+    </div>
+</div>

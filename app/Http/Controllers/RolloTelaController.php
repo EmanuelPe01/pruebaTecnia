@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\rolloTela;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -19,6 +20,19 @@ class RolloTelaController extends Controller
                 'fecha_ingreso' => 'required|date',
             ]);
 
+            // Verificar si ya existe la combinación de tipo de tela y color
+            $existe = rolloTela::where('cd_tipo_tela', $request->cd_tipo_tela)
+                ->where('cd_color', $request->cd_color)
+                ->exists();
+
+            if ($existe) {
+                return response()->json([
+                    'code' => 409,
+                    'message' => 'Ya existe un rollo con esta combinación de tipo de tela y color.',
+                    'detalle' => null
+                ], 200);
+            }
+
             $rollo = rolloTela::create($request->only([
                 'cd_tipo_tela',
                 'cd_color',
@@ -31,7 +45,6 @@ class RolloTelaController extends Controller
                 'message' => 'Rollo de tela creado con éxito',
                 'detalle' => $rollo
             ], 200);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'code' => 400,
@@ -52,12 +65,21 @@ class RolloTelaController extends Controller
         try {
             $rollos = rolloTela::with(['colorTela', 'tipoTela'])->get();
 
+            $detalleRollos = $rollos->map(function ($rollo) {
+                return [
+                    'id' => $rollo->id,
+                    'cantidad' => $rollo->cantidad,
+                    'fecha_ingreso' => Carbon::parse($rollo->fecha_ingreso)->format('d/m/Y'),
+                    'color' => $rollo->colorTela,       // detalle completo de la relación
+                    'tipo_tela' => $rollo->tipoTela      // detalle completo de la relación
+                ];
+            });
+
             return response()->json([
                 'code' => 200,
                 'message' => 'Éxito',
-                'detalle' => ['rollos' => $rollos]
+                'detalle' => ['rollos' => $detalleRollos]
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'code' => 500,
@@ -98,7 +120,6 @@ class RolloTelaController extends Controller
                 'message' => 'Rollo de tela actualizado',
                 'detalle' => $rollo
             ], 200);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
                 'code' => 400,
@@ -133,7 +154,6 @@ class RolloTelaController extends Controller
                 'code' => 200,
                 'message' => 'Rollo eliminado con éxito'
             ], 200);
-
         } catch (\Illuminate\Database\QueryException $e) {
             return response()->json([
                 'code' => 500,
