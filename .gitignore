@@ -16,3 +16,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/fronEnd/pruebaTecnica_front/.angular
+/fronEnd/pruebaTecnica_front/.vscode
