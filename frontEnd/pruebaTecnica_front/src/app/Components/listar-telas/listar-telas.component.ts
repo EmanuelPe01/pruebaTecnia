@@ -3,6 +3,7 @@ import { ApiResponse, ColorTela, DetalleColores, DetalleRollos, DetalleTipos, Ro
 import { ColorTelaService } from 'src/app/Services/color-tela.service';
 import { TelasService } from 'src/app/Services/telas.service';
 import { TipoTelaService } from 'src/app/Services/tipo-tela.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-listar-telas',
@@ -10,12 +11,13 @@ import { TipoTelaService } from 'src/app/Services/tipo-tela.service';
   styleUrls: ['./listar-telas.component.css']
 })
 export class ListarTelasComponent {
-  telas: RolloTela[] | undefined
+  telas: RolloTela[] = []
   coloresTela: ColorTela[] = []
   tiposTela: TipoTela[] = []
   isLoading: boolean = true
   criterio_tela: string = ""
   criterio_color: string = ""
+  tela_detalle: RolloTela | undefined
 
   constructor(
     private telaService: TelasService,
@@ -70,5 +72,64 @@ export class ListarTelasComponent {
 
     return [];
   }
+
+  setDetalleTela(tela: RolloTela){
+    this.tela_detalle = tela
+  }
+
+  deleteTela(cd_tela: number) {
+          Swal.fire({
+              title: "¿Estas seguro?",
+              text: `Esta acción eliminará todas las ventas de esta tela`,
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#ff0000",
+              cancelButtonColor: "#000",
+              confirmButtonText: "Confirmar",
+              cancelButtonText: "Cancelar"
+          }).then((result) => {
+              if (result.isConfirmed) {
+                  this.showLoadingMessage(true, 'Eliminando')
+                  this.telaService.deleteRolloTela(cd_tela)
+                      .pipe().subscribe((data: any) => {
+                          this.showLoadingMessage(false, '')
+                          setTimeout(() => { }, 100)
+                          this.getTipos()
+                          this.showMessageSucces(data.message)
+                          this.getTelas()
+                      })
+              }
+          });
+      }
+  
+      showMessageSucces(message: string) {
+          Swal.fire({
+              icon: 'success',
+              title: message,
+              showConfirmButton: false,
+              timer: 1500
+          })
+      }
+  
+      showErrorMessage(message: string) {
+          Swal.fire({
+              icon: 'error',
+              title: message,
+              confirmButtonColor: "#000",
+              confirmButtonText: "Aceptar",
+          })
+      }
+  
+      showLoadingMessage(flag: boolean, title: string) {
+          if (flag) {
+              Swal.fire({
+                  title: title,
+                  didOpen: () => {
+                      Swal.disableButtons()
+                      Swal.showLoading(null)
+                  }
+              })
+          }
+      }
 
 }

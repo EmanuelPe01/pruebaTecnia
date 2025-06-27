@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ApiResponse, DetalleRollos } from '../Models/ModelResponseTelas';
+import { ApiResponse, DetalleRollos, Venta } from '../Models/ModelResponseTelas';
 import { Observable } from 'rxjs';
 import { endpoint } from '../Models';
 
@@ -27,5 +27,13 @@ export class TelasService {
 
   updateRolloTela(tela: any, id: number) {
     return this.http.put(endpoint + 'updateRolloTela/' + id, tela)
+  }
+
+  storeVenta(ventaTela: any) {
+    return this.http.post(endpoint + 'storeVenta', ventaTela)
+  }
+
+  getVentas(): Observable<ApiResponse<Venta[]>> {
+    return this.http.get<ApiResponse<Venta[]>>(endpoint + 'showAllVentas')
   }
 }

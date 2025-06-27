@@ -16,8 +16,9 @@ class RolloTelaController extends Controller
             $request->validate([
                 'cd_tipo_tela' => 'required|exists:tipo_telas,id',
                 'cd_color' => 'required|exists:color_telas,id',
-                'cantidad' => 'required|numeric|min:0',
-                'fecha_ingreso' => 'required|date',
+                'cantidad' => 'required|numeric|min:1',
+                'precio' => 'required|numeric|min:1',
+                'fecha_ingreso' => 'required|date'
             ]);
 
             // Verificar si ya existe la combinación de tipo de tela y color
@@ -37,6 +38,7 @@ class RolloTelaController extends Controller
                 'cd_tipo_tela',
                 'cd_color',
                 'cantidad',
+                'precio',
                 'fecha_ingreso'
             ]));
 
@@ -63,12 +65,15 @@ class RolloTelaController extends Controller
     public function showAll()
     {
         try {
-            $rollos = rolloTela::with(['colorTela', 'tipoTela'])->get();
+            $rollos = rolloTela::with(['colorTela', 'tipoTela'])
+                ->orderBy('fecha_ingreso', 'desc')
+                ->get();
 
             $detalleRollos = $rollos->map(function ($rollo) {
                 return [
                     'id' => $rollo->id,
                     'cantidad' => $rollo->cantidad,
+                    'precio' => $rollo->precio,
                     'fecha_ingreso' => Carbon::parse($rollo->fecha_ingreso)->format('d/m/Y'),
                     'color' => $rollo->colorTela,       // detalle completo de la relación
                     'tipo_tela' => $rollo->tipoTela      // detalle completo de la relación
@@ -105,6 +110,7 @@ class RolloTelaController extends Controller
                 'cd_tipo_tela' => 'sometimes|exists:tipo_telas,id',
                 'cd_color' => 'sometimes|exists:color_telas,id',
                 'cantidad' => 'sometimes|numeric|min:0',
+                'precio' => 'sometimes|numeric|min:0',
                 'fecha_ingreso' => 'sometimes|date',
             ]);
 
@@ -112,6 +118,7 @@ class RolloTelaController extends Controller
                 'cd_tipo_tela',
                 'cd_color',
                 'cantidad',
+                'precio',
                 'fecha_ingreso'
             ]));
 

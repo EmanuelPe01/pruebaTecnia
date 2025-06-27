@@ -1,24 +1,24 @@
 import { Component, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { ModalDirective } from "ngx-bootstrap/modal";
-import { ApiResponse, ColorTela, DetalleColores, DetalleTipos, TipoTela } from "src/app/Models";
+import { ApiResponse, ColorTela, DetalleColores, DetalleTipos, RolloTela, TipoTela } from "src/app/Models";
 import { TelasService } from "src/app/Services/telas.service";
 import Swal from "sweetalert2";
 
 @Component({
-    selector: 'nuevaTela',
+    selector: 'ventaTela',
     template: `
         <button class="btn btn-outline-dark" style="text-decoration: none;
                 " (click)="parentModal.show()">
-            <i class="fas fa-box-open"></i>
-            Ingresar tela al inventario
+            <i class="fa-solid fa-cash-register"></i>
+            Realizar venta
         </button>
         <div class="modal fade" bsModal #parentModal="bs-modal" tabindex="-1" role="dialog" aria-labelledby="dialog-nested-name1">
             <div class="modal-dialog modal-dialog-centered">
-                <form [formGroup]="formRegistro" (ngSubmit)="saveTela()">
+                <form [formGroup]="formRegistro" (ngSubmit)="saveVenta()">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="nuevaTelas">Agregar tela al inventario</h1>
+                            <h1 class="modal-title fs-5" id="ventaTelas">Realizar inventario</h1>
                             <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cerrarModal()">
                                 <span aria-hidden="true" class="visually-hidden">&times;</span>
                             </button>
@@ -26,35 +26,31 @@ import Swal from "sweetalert2";
                         <div class="modal-body">
                             <div class="row">
                                 <div class="col col-12 m-2">
-                                    <div class="input-container">
-                                        <label class="label" for="tipoTela">Tipo de tela</label>
-                                        <select id="tipoTela" class="select-estatus"
-                                            formControlName="cd_tipo_tela">
-                                            <option selected style="color: darkgrey;">Selecciona un tipo de tela</option>
-                                            <option *ngFor="let tela of tiposTela"
-                                                [value]="tela.id">
-                                                {{tela.nb_tipo_tela}}</option>
-                                        </select>
-                                        <div class="underline"></div>
-                                    </div>
-                                    <div *ngIf="formRegistro.get('cd_tipo_tela')?.hasError('required') && formRegistro.get('cd_tipo_tela')?.touched;">
-                                        <p class="errorText">Campo requerido*</p>
-                                    </div>
-                                </div>
-                                <div class="col col-12 m-2">
-                                    <div class="input-container">
-                                        <label class="label" for="colorTela">Color de tela</label>
-                                        <select id="colorTela" class="select-estatus"
-                                            formControlName="cd_color">
-                                            <option selected style="color: darkgrey;">Selecciona un color de tela</option>
-                                            <option *ngFor="let color of coloresTela"
-                                                [value]="color.id">
-                                                {{color.nb_color_tela}}</option>
-                                        </select>
-                                        <div class="underline"></div>
-                                    </div>
-                                    <div *ngIf="formRegistro.get('cd_color')?.hasError('required') && formRegistro.get('cd_color')?.touched;">
-                                        <p class="errorText">Campo requerido*</p>
+                                    <div class="row">
+                                        <div class="col col-8">
+                                            <div class="input-container">
+                                                <label class="label pb-5" for="colorTela">Telas</label>
+                                                <select id="colorTela" class="select-estatus"
+                                                    (change)="obtenerPrecio($event)"
+                                                    formControlName="cd_rollo_tela">
+                                                    <option selected style="color: darkgrey;">Selecciona una tela</option>
+                                                    <option *ngFor="let rolloTela of rollosTela"
+                                                        [value]="rolloTela.id">
+                                                        {{rolloTela.tipo_tela.nb_tipo_tela}} {{rolloTela.color.nb_color_tela}}</option>
+                                                </select>
+                                                <div class="underline"></div>
+                                            </div>
+                                            <div *ngIf="formRegistro.get('cd_rollo_tela')?.hasError('required') && formRegistro.get('cd_rollo_tela')?.touched;">
+                                                <p class="errorText">Campo requerido*</p>
+                                            </div>
+                                        </div>
+                                        <div class="col col-4">
+                                            <div class="input-container">
+                                                <label class="label" for="metros-tela">Metros disponibles</label>
+                                                <input required="required" [min]="0" step="0.5" type="number" id="metros-tela" formControlName="metros" readonly>
+                                                <div class="underline"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col col-12">
@@ -62,20 +58,20 @@ import Swal from "sweetalert2";
                                         <div class="col col-5 m-2">
                                             <div class="input-container">
                                                 <label class="label" for="cantidad-tela">Cantidad (metros)</label>
-                                                <input required="required" [min]="0" step="0.5" type="number" id="cantidad-tela" formControlName="cantidad">
+                                                <input (change)="calcularTotal($event)" required="required" [min]="0" step="0.5" type="number" id="cantidad-tela" formControlName="cantidad_vendida">
                                                 <div class="underline"></div>
                                             </div>
-                                            <div *ngIf="formRegistro.get('cantidad')?.hasError('required') && formRegistro.get('cantidad')?.touched;">
+                                            <div *ngIf="formRegistro.get('cantidad_vendida')?.hasError('required') && formRegistro.get('cantidad_vendida')?.touched;">
                                                 <p class="errorText">Campo requerido*</p>
                                             </div>
                                         </div>
                                         <div class="col col-5 m-2">
                                             <div class="input-container">
-                                                <label class="label" for="precio-tela">Precio x Metro (MXN)</label>
-                                                <input required="required" [min]="0" step="0.5" type="number" id="precio-tela" formControlName="precio">
+                                                <label class="label" for="precio-tela">Total de venta</label>
+                                                <input required="required" [min]="0" step="0.5" type="number" id="precio-tela" formControlName="total_venta" readonly>
                                                 <div class="underline"></div>
                                             </div>
-                                            <div *ngIf="formRegistro.get('precio')?.hasError('required') && formRegistro.get('precio')?.touched;">
+                                            <div *ngIf="formRegistro.get('total_venta')?.hasError('required') && formRegistro.get('total_venta')?.touched;">
                                                 <p class="errorText">Campo requerido*</p>
                                             </div>
                                         </div>
@@ -85,15 +81,15 @@ import Swal from "sweetalert2";
                                     <div class="textInputWrapper">
                                         <input 
                                             required="required"
-                                            placeholder="Fecha de ingreso" 
+                                            placeholder="Fecha de venta" 
                                             [type] = "inputFecha"  
                                             class="textInput" 
-                                            formControlName="fecha_ingreso"
+                                            formControlName="fecha_venta"                                            
                                             (focus)="onFocus()"
                                             (blur)="onBlur()"
                                         >
                                     </div> 
-                                    <div *ngIf="formRegistro.get('fecha_ingreso')?.hasError('required') && formRegistro.get('fecha_ingreso')?.touched;">
+                                    <div *ngIf="formRegistro.get('fecha_venta')?.hasError('required') && formRegistro.get('fecha_venta')?.touched;">
                                         <p class="errorText">Campo requerido*</p>
                                     </div>
                                 </div>
@@ -124,11 +120,12 @@ import Swal from "sweetalert2";
     styleUrls: ['./style.css']
 })
 
-export class NuevaTelaComponent {
+export class VentaTelaComponent {
     @ViewChild('parentModal', { static: false }) childModal?: ModalDirective;
-    @Input() coloresTela: ColorTela[] = []
-    @Input() tiposTela: TipoTela[] = []
+    @Input() rollosTela: RolloTela[] = []
     @Output() actualizarInventario = new EventEmitter<any>();
+    precioUnitario: number | undefined
+    cantidadVendida: number = 0
     formRegistro: FormGroup
     inputFecha: string = ''
 
@@ -137,22 +134,24 @@ export class NuevaTelaComponent {
         private telasService: TelasService
     ) {
         this.formRegistro = this._form.group({
-            cd_tipo_tela: ['', [Validators.required]],
-            cd_color: ['', [Validators.required]],
-            cantidad: [null, [Validators.required, Validators.min(0.1)]],
-            precio: [null, [Validators.required, Validators.min(0.1)]],
-            fecha_ingreso: ['', [Validators.required]],
+            cd_rollo_tela: ['', [Validators.required]],
+            cantidad_vendida: [null, [Validators.required, Validators.min(0.1)]],
+            total_venta: ['', [Validators.required]],
+            fecha_venta: ['', [Validators.required]],
+            metros: [{ value: null, disabled: true }],
         });
+        this.getFechaHoy()
     }
 
 
-    saveTela() {
+    saveVenta() {
         if (this.formRegistro.valid) {
             const datosForm = this.formRegistro.value;
-            this.telasService.createRolloTela(datosForm).
+            this.telasService.storeVenta(datosForm).
                 pipe().subscribe((data: any) => {
                     if (data.code == 409 || data.code == 500 || data.code == 400) {
                         this.showErrorMessage(data.message)
+                        console.log(data)
                     } else {
                         this.formRegistro.reset()
                         setTimeout(() => { }, 100)
@@ -161,15 +160,6 @@ export class NuevaTelaComponent {
                     }
                 })
         }
-    }
-
-    onBlur() {
-        const fecha = this.formRegistro.get('fecha_ingreso')?.value
-        fecha ? this.inputFecha = 'date' : this.inputFecha = 'text'
-    }
-
-    onFocus() {
-        this.inputFecha = 'date'
     }
 
     cerrarModal() {
@@ -184,6 +174,44 @@ export class NuevaTelaComponent {
             this.childModal.hide()
             this.formRegistro.reset()
         }
+    }
+
+    getFechaHoy(): string {
+        return new Date().toISOString().slice(0, 10); // "YYYY-MM-DD"
+    }
+
+    obtenerPrecio(event: Event) {
+        const selectElement = event.target as HTMLSelectElement;
+        const rolloId = Number(selectElement.value);
+        this.precioUnitario = this.rollosTela.find(rollosTela => rollosTela.id == rolloId)?.precio;
+        
+        this.formRegistro.patchValue({
+            metros: this.rollosTela.find(rollosTela => rollosTela.id == rolloId)?.cantidad
+        })
+        
+        if(this.precioUnitario && this.cantidadVendida){
+            this.formRegistro.patchValue({
+                total_venta: Math.round((this.precioUnitario * this.cantidadVendida + Number.EPSILON) * 100) / 100,
+            })
+        }
+    }
+
+    calcularTotal(event: any) {
+        this.cantidadVendida = Number(event.target.value);
+        if(this.precioUnitario && this.cantidadVendida){
+            this.formRegistro.patchValue({
+                total_venta: Math.round((this.precioUnitario * this.cantidadVendida + Number.EPSILON) * 100) / 100,
+            })
+        }
+    }
+
+    onBlur() {
+        const fecha = this.formRegistro.get('fecha_venta')?.value
+        fecha ? this.inputFecha = 'date' : this.inputFecha = 'text'
+    }
+
+    onFocus() {
+        this.inputFecha = 'date'
     }
 
     showMessageSucces(message: string) {

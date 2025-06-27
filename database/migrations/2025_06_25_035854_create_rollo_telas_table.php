@@ -15,6 +15,7 @@ return new class extends Migration
             $table->unsignedBigInteger('cd_color');
             $table->foreign('cd_color')->references('id')->on('color_telas')->onDelete('cascade');
             $table->float('cantidad');
+            $table->float('precio');
             $table->date('fecha_ingreso');
             $table->timestamps();
         });

@@ -3,14 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         Schema::create('color_telas', function (Blueprint $table) {
@@ -18,13 +14,14 @@ return new class extends Migration
             $table->string('nb_color_tela');
             $table->timestamps();
         });
+
+        DB::table('color_telas')->insert([
+            ['nb_color_tela' => 'Rojo', 'created_at' => now(), 'updated_at' => now()],
+            ['nb_color_tela' => 'Azul', 'created_at' => now(), 'updated_at' => now()],
+            ['nb_color_tela' => 'Verde', 'created_at' => now(), 'updated_at' => now()],
+        ]);
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         Schema::dropIfExists('color_telas');

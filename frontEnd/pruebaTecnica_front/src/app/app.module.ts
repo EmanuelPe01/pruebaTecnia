@@ -12,6 +12,9 @@ import { NuevoColorTelaComponent } from './Components/gestionColores/nuevoColor'
 import { GestionTiposTelaComponent } from './Components/gestionTipoTelas/gestionTipo';
 import { NuevoTipoTelaComponent } from './Components/gestionTipoTelas/nuevoTipo';
 import { NuevaTelaComponent } from './Components/gestionTelas/nuevatela';
+import { VentaTelaComponent } from './Components/gestionTelas/ventaTela';
+import { EditarTelaComponent } from './Components/gestionTelas/editarTela';
+import { HistorialComprasComponent } from './Components/historial-compras/historial-compras.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,10 @@ import { NuevaTelaComponent } from './Components/gestionTelas/nuevatela';
     NuevoColorTelaComponent,
     GestionTiposTelaComponent,
     NuevoTipoTelaComponent,
-    NuevaTelaComponent
+    NuevaTelaComponent,
+    VentaTelaComponent,
+    EditarTelaComponent,
+    HistorialComprasComponent
   ],
   imports: [
     ModalModule.forRoot(),

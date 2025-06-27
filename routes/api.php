@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ColorTelaController;
 use App\Http\Controllers\TipoTelaController;
 use App\Http\Controllers\RolloTelaController;
-
+use App\Http\Controllers\VentaTelasController;
 
 Route::controller(ColorTelaController::class)->group( function () {
     Route::post('/createColor', 'store');
@@ -24,4 +24,9 @@ Route::controller(RolloTelaController::class)->group(function () {
     Route::get('/showAllRolloTelas', 'showAll');
     Route::put('/updateRolloTela/{id}', 'edit');
     Route::delete('/dropRolloTela/{id}', 'destroy');
+});
+
+Route::controller(VentaTelasController::class)->group(function () {
+    Route::post('/storeVenta', 'storeVenta');
+    Route::get('/showAllVentas', 'showAll');
 });

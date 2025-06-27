@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\colorTela as colorTela;
 use App\Models\tipoTela as tipoTela;
+use App\Models\venta_telas;
 
 class rolloTela extends Model
 {
@@ -16,6 +17,7 @@ class rolloTela extends Model
         'cd_tipo_tela',
         'cd_color',
         'cantidad',
+        'precio',
         'fecha_ingreso'
     ];
 
@@ -24,11 +26,18 @@ class rolloTela extends Model
         'updated_at'
     ];
 
-    public function colorTela() {
+    public function colorTela()
+    {
         return $this->belongsTo(colorTela::class, 'cd_color');
     }
 
-    public function tipoTela () {
+    public function tipoTela()
+    {
         return $this->belongsTo(tipoTela::class, 'cd_tipo_tela');
+    }
+
+    public function ventas()
+    {
+        return $this->hasMany(venta_telas::class, 'rollo_tela_id');
     }
 }

@@ -17,7 +17,9 @@ import Swal from "sweetalert2";
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="gestionTiposTelas">Aministrar tipos</h1>
-                        <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cerrarModal()"></button>
+                        <button type="button" class="btn-close close pull-right" aria-label="Close" (click)="cerrarModal()">
+                            <span aria-hidden="true" class="visually-hidden">&times;</span>
+                        </button>
                     </div>
                     <div class="modal-body">
                         <div class="table-responsive-xl">

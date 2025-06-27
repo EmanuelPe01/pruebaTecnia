@@ -18,6 +18,7 @@ export interface RolloTela {
   id: number;
   cantidad: number;
   fecha_ingreso: string;
+  precio?: number;
   color: ColorTela;
   tipo_tela: TipoTela;
 }
@@ -32,4 +33,14 @@ export interface DetalleColores {
 
 export interface DetalleTipos {
     telas: TipoTela[]
+}
+
+export interface Venta {
+  total_venta: number;
+  cantidad_vendida: number;
+  fecha_venta: string;
+  rollo: {
+    tipo_tela: string;
+    color_tela: string
+  }
 }
