@@ -28,7 +28,7 @@
 5. Instalar todas las dependencias necesarias con:
    ```bash
    composer install
-````
+    ````
 
 6. Ejecutar el siguiente comando para generar las tablas necesarias:
 
