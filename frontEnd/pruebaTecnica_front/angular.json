@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/prueba-tecnica-front",
+            "outputPath": "../../public/angular",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -45,8 +45,10 @@
                   "maximumWarning": "2kb",
                   "maximumError": "4kb"
                 }
+                
               ],
-              "outputHashing": "all"
+              "outputPath": "../../public/angular",
+              "outputHashing": "none"
             },
             "development": {
               "buildOptimizer": false,
