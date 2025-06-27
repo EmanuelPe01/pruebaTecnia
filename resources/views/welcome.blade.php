@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Mi Sistema de Telas</title>
-    <base href="/angular/">
+    <base href="/app/">
 
     {{-- CSS compilado por Angular --}}
     <link rel="stylesheet" href="{{ asset('angular/styles.css') }}">
