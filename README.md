@@ -12,8 +12,15 @@ Claro, mai. Aquí tienes el contenido completo del `README.md` ya editado con to
 
 ## Requisitos
 
-1. Tener instalado Composer 2.6.4  
-   Puedes descargarlo desde [https://getcomposer.org/download](https://getcomposer.org/download)
+## Requisitos del sistema
+
+- **PHP** 8.2.16
+- **Node.js** 18.18  
+- **npm** 10.1.0
+- **Angular** 16.2.16
+- **TypeScript** 5.1.6   
+- **Composer** 2.6.4 (descarga desde [https://getcomposer.org/download](https://getcomposer.org/download))
+
 
 ## Antes de comenzar
 
